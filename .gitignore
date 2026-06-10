@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Variables de entorno
+.env
+**/.env
+
+# Builds
+dist/
+**/dist/
+.vite/
+
+# Base de datos de tests
+**/db.test.json
+
+# Logs y temporales
+*.log
+coverage/
+.DS_Store
+Thumbs.db

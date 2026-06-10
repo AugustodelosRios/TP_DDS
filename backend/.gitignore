@@ -1,0 +1,7 @@
+node_modules/
+.env
+coverage/
+*.log
+# Base de datos mutable: se genera con `npm run seed`
+src/data/db.json
+src/data/db.test.json

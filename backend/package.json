@@ -1,0 +1,29 @@
+{
+  "name": "tp-dds-backend",
+  "version": "1.0.0",
+  "description": "Backend full stack para seguimiento de tareas de proyectos - DDS 2026 3K4",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/data/runSeed.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand --forceExit"
+  },
+  "keywords": ["express", "jwt", "dds", "tareas", "proyectos"],
+  "author": "Grupo DDS 3K4",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  }
+}
