@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from '../components/ThemeToggle';
 import { CheckSquare, Eye, EyeOff, AlertCircle, ShieldCheck, Layers, Activity } from 'lucide-react';
 
 export default function Login() {
@@ -51,6 +52,7 @@ export default function Login() {
       </aside>
 
       <section className="auth-panel">
+        <ThemeToggle className="theme-toggle--floating" />
         <div className="auth-card">
           <h1>Iniciar sesión</h1>
           <p className="sub">Ingresá con tu cuenta para gestionar las tareas.</p>

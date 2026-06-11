@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
+import ThemeToggle from '../components/ThemeToggle';
 import { CheckSquare, Eye, EyeOff, AlertCircle, UserPlus } from 'lucide-react';
 
 export default function Registro() {
@@ -63,6 +64,7 @@ export default function Registro() {
       </aside>
 
       <section className="auth-panel">
+        <ThemeToggle className="theme-toggle--floating" />
         <div className="auth-card">
           <h1>Registrarse</h1>
           <p className="sub">Completá tus datos para crear una cuenta de colaborador.</p>

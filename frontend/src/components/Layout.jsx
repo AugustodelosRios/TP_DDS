@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { esGestor, ROLES } from '../utils/constants';
+import ThemeToggle from './ThemeToggle';
 import { ListChecks, LayoutDashboard, LogOut, Menu, X, CheckSquare } from 'lucide-react';
 
 /**
@@ -70,6 +71,7 @@ export default function Layout() {
           </div>
 
           <div className="topbar__user">
+            <ThemeToggle />
             <div className="user-meta">
               <span className="name">{usuario.nombre}</span>
               <span className="role">{ROLES[usuario.rol] || usuario.rol}</span>

@@ -32,7 +32,14 @@ export default function App() {
       >
         <Route path="/" element={<Navigate to="/tareas" replace />} />
         <Route path="/tareas" element={<Tareas />} />
-        <Route path="/tareas/nueva" element={<TareaForm modo="crear" />} />
+        <Route
+          path="/tareas/nueva"
+          element={
+            <ProtectedRoute soloGestion>
+              <TareaForm modo="crear" />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/tareas/:id" element={<TareaDetalle />} />
         <Route path="/tareas/:id/editar" element={<TareaForm modo="editar" />} />
         <Route
