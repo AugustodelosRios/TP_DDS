@@ -1,11 +1,11 @@
 # TaskFlow DDS — Seguimiento de tareas de proyectos
 
-Aplicación **full stack** para el seguimiento de tareas dentro de proyectos, desarrollada para el
-**TP previo al Parcial 2 — DDS 2026, Curso 3K4**.
+Aplicación **full stack** para el seguimiento de tareas dentro de proyectos.
+**TP — DDS 2026, Curso 3K4**.
 
 El sistema permite crear tareas dentro de proyectos, asignarlas a responsables válidos y controlar
 prioridad y estado respetando reglas de negocio reales (no es un CRUD genérico): una tarea pertenece
-obligatoriamente a un proyecto, tiene un responsable que **integra** ese proyecto y respeta
+obligatoriamente a un proyecto, tiene un responsable que es **cualquier usuario registrado** y respeta
 **transiciones de estado coherentes**.
 
 - **Backend:** Node.js + Express (JWT, middlewares, manejo central de errores, persistencia en JSON, tests con Jest + Supertest).
@@ -76,13 +76,15 @@ Vite también deja un **proxy** de `/api` al backend para desarrollo.
 
 ## 👤 Usuarios de prueba (semilla)
 
-Todos los usuarios semilla usan la contraseña **`password123`**.
+Todos los usuarios semilla usan la contraseña **`123456`**.
+
+Hay **5 usuarios**: 1 admin y 4 colaboradores.
 
 | Rol          | Email            | Puede…                                                                 |
 |--------------|------------------|------------------------------------------------------------------------|
 | **admin**    | `admin@dds.com`  | Todo: crear, reasignar, cambiar prioridad, finalizar/cancelar, resumen |
-| **líder**    | `lider@dds.com`  | Igual que admin sobre las tareas del proyecto + resumen                |
-| colaborador  | `mica@dds.com`   | Ver tareas, editar descripción y mover **sus** tareas a en_progreso/bloqueada |
+| colaborador  | `lucia@dds.com`  | Ver tareas, editar descripción y mover **sus** tareas a en_progreso/bloqueada |
+| colaborador  | `mica@dds.com`   | Ídem colaborador                                                       |
 | colaborador  | `juan@dds.com`   | Ídem colaborador                                                       |
 | colaborador  | `ana@dds.com`    | Ídem colaborador                                                       |
 
@@ -94,13 +96,13 @@ Todos los usuarios semilla usan la contraseña **`password123`**.
 ## 🧠 Dominio: responsable válido, prioridad y estados
 
 ### Entidades (4)
-- **usuarios** — colaboradores, líderes y administradores.
+- **usuarios** — colaboradores y administradores.
 - **proyectos** — contenedor de trabajo; tiene `estado` (`activo`/`pausado`/`finalizado`) y `integrantes`.
 - **tareas** — unidad de trabajo con `responsableId`, `prioridad`, `estado`, `fechaLimite`.
 - **historial_tareas** — auditoría de cambios (creación, edición, reasignación, cambio de estado/prioridad, cancelación).
 
 ### Reglas centrales (validadas en el **servicio del backend**)
-- **Responsable válido:** una tarea solo puede crearse/reasignarse a un usuario que **integra** el proyecto.
+- **Responsable válido:** una tarea puede crearse/reasignarse a **cualquier usuario registrado** (el responsable solo debe existir en el sistema).
 - **Proyecto inexistente → 404**; **proyecto finalizado → 400** (no se crean ni modifican tareas);
   **proyecto pausado → 400** al **crear** (sí se pueden consultar/editar las existentes).
 - **Prioridad:** `baja`, `media`, `alta`, `critica` (cualquier otro valor → 400).
@@ -138,7 +140,7 @@ Se resuelven **en el backend**. El listado acepta:
   - `authorizeRoles(...)` → **403** si el rol no está habilitado para la acción.
   - La **propiedad del recurso** (colaborador responsable de la tarea) se valida en el **servicio**.
 
-| Acción                                   | colaborador            | admin / líder |
+| Acción                                   | colaborador            | admin |
 |------------------------------------------|------------------------|---------------|
 | Listar / ver detalle / historial         | ✅                     | ✅            |
 | Crear tarea                               | ❌ (403)               | ✅            |
@@ -165,18 +167,18 @@ Base: `http://localhost:4000/api`
 | GET    | `/proyectos`                  | Lista de proyectos                            | JWT               |
 | GET    | `/usuarios`                   | Lista de usuarios (para selects)              | JWT               |
 | GET    | `/tareas`                     | Listado con filtros/orden/paginación          | JWT               |
-| GET    | `/tareas/resumen`             | Resumen administrativo (agregados)            | JWT + admin/líder |
+| GET    | `/tareas/resumen`             | Resumen administrativo (agregados)            | JWT + admin |
 | GET    | `/tareas/:id`                 | Detalle de una tarea                          | JWT               |
 | GET    | `/tareas/:id/historial`       | Historial de auditoría de la tarea            | JWT               |
-| POST   | `/tareas`                     | Crear tarea                                   | JWT + admin/líder |
+| POST   | `/tareas`                     | Crear tarea                                   | JWT + admin |
 | PUT    | `/tareas/:id`                 | Editar tarea (según permisos)                 | JWT               |
 | PATCH  | `/tareas/:id/iniciar`         | → `en_progreso`                               | JWT (resp/gestor) |
 | PATCH  | `/tareas/:id/bloquear`        | → `bloqueada`                                 | JWT (resp/gestor) |
-| PATCH  | `/tareas/:id/cancelar`        | → `cancelada`                                 | JWT + admin/líder |
-| PATCH  | `/tareas/:id/finalizar`       | → `finalizada`                                | JWT + admin/líder |
+| PATCH  | `/tareas/:id/cancelar`        | → `cancelada`                                 | JWT + admin |
+| PATCH  | `/tareas/:id/finalizar`       | → `finalizada`                                | JWT + admin |
 
 **Status HTTP usados:** `200`, `201`, `400`, `401`, `403`, `404`, `409`, `500`.
-Los errores responden JSON claro, p. ej. `{ "error": "El responsable no pertenece al proyecto" }`.
+Los errores responden JSON claro, p. ej. `{ "error": "El responsable indicado no existe" }`.
 
 ---
 
@@ -201,7 +203,7 @@ responsive (sidebar colapsable en mobile) y accesibilidad (focus visible, labels
 
 ## ✅ Testing
 
-Backend con **Jest + Supertest** (29 pruebas). Cada test valida **status HTTP** y **cuerpo JSON**.
+Backend con **Jest + Supertest** (30 pruebas). Cada test valida **status HTTP** y **cuerpo JSON**.
 
 ```bash
 cd backend
@@ -212,7 +214,7 @@ Cubre, entre otros:
 - Login correcto e inválido; registro y duplicados.
 - Listado con y sin filtros; filtro inválido (400).
 - Detalle existente (200) e inexistente (404).
-- Creación válida (201) e inválidas: responsable fuera del proyecto, prioridad/estado no permitido,
+- Creación válida (201) e inválidas: responsable inexistente, prioridad/estado no permitido,
   proyecto finalizado/pausado, proyecto inexistente.
 - Acceso sin JWT (401) y con rol insuficiente (403): crear tarea y resumen.
 - Permisos por propiedad (colaborador no responsable no puede iniciar).
@@ -242,8 +244,8 @@ Cubre, entre otros:
 ## ⚠️ Limitaciones conocidas
 
 - La persistencia JSON no es concurrente: pensada para un único proceso (suficiente para el TP).
-- El registro público solo crea **colaboradores**; los roles `admin`/`líder` se cargan por semilla.
-- Las contraseñas semilla son compartidas (`password123`) **a propósito**, para probar rápido.
+- El registro público solo crea **colaboradores**; el rol `admin` se carga por semilla.
+- Las contraseñas semilla son compartidas (`123456`) **a propósito**, para probar rápido.
 - No hay refresh tokens: el JWT expira según `JWT_EXPIRES_IN` (8 h por defecto) y se vuelve a loguear.
 - Tests de frontend no incluidos (son opcionales en el enunciado); el backend sí está cubierto.
 - La "observación administrativa" sobre tareas finalizadas/canceladas existe en el backend (solo

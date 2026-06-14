@@ -6,19 +6,19 @@ const bcrypt = require('bcryptjs');
  * Genera el set de datos semilla inicial.
  *
  * Incluye (cumpliendo el mínimo del enunciado):
- *  - 5 usuarios (1 admin, 1 líder y 3 colaboradores)
+ *  - 5 usuarios (1 admin y 4 colaboradores)
  *  - 4 proyectos (activo, activo, pausado y finalizado)
  *  - 15 tareas en distintos estados, prioridades y con vencimientos variados
  *
- * Todas las contraseñas semilla son "password123" (hasheadas con bcrypt).
+ * Todas las contraseñas semilla son "123456" (hasheadas con bcrypt).
  * Esto está documentado en el README como facilidad de prueba.
  */
 function buildSeedData() {
-  const passwordHash = bcrypt.hashSync('password123', 10);
+  const passwordHash = bcrypt.hashSync('123456', 10);
 
   const usuarios = [
     { id: 'usr-001', nombre: 'Admin General', email: 'admin@dds.com', passwordHash, rol: 'admin', activo: true },
-    { id: 'usr-002', nombre: 'Lucía Líder', email: 'lider@dds.com', passwordHash, rol: 'lider', activo: true },
+    { id: 'usr-002', nombre: 'Lucía Méndez', email: 'lucia@dds.com', passwordHash, rol: 'colaborador', activo: true },
     { id: 'usr-003', nombre: 'Mica Torres', email: 'mica@dds.com', passwordHash, rol: 'colaborador', activo: true },
     { id: 'usr-004', nombre: 'Juan Pérez', email: 'juan@dds.com', passwordHash, rol: 'colaborador', activo: true },
     { id: 'usr-005', nombre: 'Ana Gómez', email: 'ana@dds.com', passwordHash, rol: 'colaborador', activo: true },

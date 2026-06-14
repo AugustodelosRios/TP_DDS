@@ -10,7 +10,7 @@ describe('Autenticación', () => {
   test('Login correcto devuelve 200, token y usuario sin passwordHash', async () => {
     const res = await request(app)
       .post('/api/auth/login')
-      .send({ email: USUARIOS.admin, password: 'password123' });
+      .send({ email: USUARIOS.admin, password: '123456' });
 
     expect(res.status).toBe(200);
     expect(res.body.token).toEqual(expect.any(String));
@@ -30,7 +30,7 @@ describe('Autenticación', () => {
   test('Login con email inexistente devuelve 401', async () => {
     const res = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'noexiste@dds.com', password: 'password123' });
+      .send({ email: 'noexiste@dds.com', password: '123456' });
 
     expect(res.status).toBe(401);
     expect(res.body.error).toBeDefined();

@@ -38,15 +38,14 @@ function esGestor(usuario) {
 }
 
 /**
- * Regla central: un usuario solo puede ser responsable si integra el proyecto.
+ * Regla: el responsable debe ser un usuario existente en el sistema.
+ * (Cualquier usuario registrado puede ser responsable, no se exige que
+ * integre el proyecto.)
  */
-function validarResponsableEnProyecto(proyecto, responsableId) {
+function validarResponsable(responsableId) {
   const usuario = buscarUsuario(responsableId);
   if (!usuario) {
     throw new AppError('El responsable indicado no existe', 400);
-  }
-  if (!proyecto.integrantes.includes(responsableId)) {
-    throw new AppError('El responsable no pertenece al proyecto', 400);
   }
   return usuario;
 }
@@ -190,8 +189,8 @@ function crear(datos, actor) {
     throw new AppError('No se pueden crear tareas en un proyecto pausado', 400);
   }
 
-  // Regla de dominio: responsable debe integrar el proyecto.
-  validarResponsableEnProyecto(proyecto, responsableId);
+  // Regla de dominio: el responsable debe ser un usuario existente.
+  validarResponsable(responsableId);
 
   const tareas = collection('tareas');
   const nueva = {
@@ -247,7 +246,7 @@ function editar(id, cambios, actor) {
   }
 
   // Permisos de edición:
-  // - gestor (admin/líder): puede editar todo.
+  // - gestor (admin): puede editar todo.
   // - colaborador: solo si es el responsable, y solo descripción.
   const gestor = esGestor(actor);
   if (!gestor) {
@@ -269,7 +268,7 @@ function editar(id, cambios, actor) {
 
   // Reasignación de responsable (solo gestor llega acá por lo anterior).
   if (cambios.responsableId !== undefined && cambios.responsableId !== tarea.responsableId) {
-    validarResponsableEnProyecto(proyecto, cambios.responsableId);
+    validarResponsable(cambios.responsableId);
     tarea.responsableId = cambios.responsableId;
     acciones.push({
       accion: ACCIONES_HISTORIAL.REASIGNACION,
@@ -358,7 +357,7 @@ function aplicarTransicion(tarea, nuevoEstado) {
  * Cambia el estado de una tarea validando permisos por rol/propiedad.
  *
  * - iniciar / bloquear: el responsable (colaborador) o un gestor.
- * - finalizar / cancelar: solo gestor (admin/líder).
+ * - finalizar / cancelar: solo gestor (admin).
  */
 function cambiarEstado(id, nuevoEstado, actor) {
   const tarea = buscarTareaOrFail(id);
@@ -373,7 +372,7 @@ function cambiarEstado(id, nuevoEstado, actor) {
 
   const accionesSoloGestor = [ESTADOS_TAREA.FINALIZADA, ESTADOS_TAREA.CANCELADA];
   if (accionesSoloGestor.includes(nuevoEstado) && !gestor) {
-    throw new AppError('Solo un admin o líder puede finalizar o cancelar una tarea', 403);
+    throw new AppError('Solo un admin puede finalizar o cancelar una tarea', 403);
   }
   // Iniciar/bloquear: responsable o gestor.
   if (

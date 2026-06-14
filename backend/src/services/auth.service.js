@@ -27,7 +27,7 @@ function aPublico(usuario) {
 
 /**
  * Registra un nuevo usuario. Email único, contraseña hasheada con bcrypt.
- * Por defecto el rol es colaborador (no se permite autoasignarse admin/lider
+ * Por defecto el rol es colaborador (no se permite autoasignarse admin
  * desde el registro público).
  */
 function registrar({ nombre, email, password, rol }) {
@@ -45,7 +45,7 @@ function registrar({ nombre, email, password, rol }) {
     passwordHash: bcrypt.hashSync(password, 10),
     // Solo se respeta un rol elevado si explícitamente lo permitimos; el registro
     // público crea colaboradores. (Documentado en el README).
-    rol: rol === ROLES.LIDER || rol === ROLES.ADMIN ? rol : ROLES.COLABORADOR,
+    rol: rol === ROLES.ADMIN ? rol : ROLES.COLABORADOR,
     activo: true,
   };
 

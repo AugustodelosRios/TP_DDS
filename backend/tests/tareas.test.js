@@ -81,14 +81,25 @@ describe('Creación de tareas', () => {
     expect(res.body.estado).toBe('pendiente');
   });
 
-  test('Creación inválida: responsable fuera del proyecto devuelve 400', async () => {
+  test('Creación con responsable que no integra el proyecto es válida (201)', async () => {
+    // Cualquier usuario registrado puede ser responsable, integre o no el proyecto.
     const res = await request(app)
       .post('/api/tareas')
       .set(auth(tokenAdmin))
       .send({ ...tareaValida, responsableId: 'usr-005' }); // no integra proy-001
 
+    expect(res.status).toBe(201);
+    expect(res.body.responsableId).toBe('usr-005');
+  });
+
+  test('Creación inválida: responsable inexistente devuelve 400', async () => {
+    const res = await request(app)
+      .post('/api/tareas')
+      .set(auth(tokenAdmin))
+      .send({ ...tareaValida, responsableId: 'usr-999' });
+
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe('El responsable no pertenece al proyecto');
+    expect(res.body.error).toBe('El responsable indicado no existe');
   });
 
   test('Creación inválida: prioridad no permitida devuelve 400', async () => {

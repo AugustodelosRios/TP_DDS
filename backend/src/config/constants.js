@@ -7,14 +7,13 @@
 
 const ROLES = {
   COLABORADOR: 'colaborador',
-  LIDER: 'lider',
   ADMIN: 'admin',
 };
 
 const ROLES_VALIDOS = Object.values(ROLES);
 
 // Roles con permisos de gestión completa sobre las tareas del proyecto.
-const ROLES_GESTION = [ROLES.LIDER, ROLES.ADMIN];
+const ROLES_GESTION = [ROLES.ADMIN];
 
 const PRIORIDADES = ['baja', 'media', 'alta', 'critica'];
 
