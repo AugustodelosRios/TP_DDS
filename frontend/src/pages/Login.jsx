@@ -107,11 +107,6 @@ export default function Login() {
             </button>
           </form>
 
-          <div className="seed-hint">
-            <strong>Usuarios de prueba</strong> (contraseña <code>password123</code>):<br />
-            Admin: <code>admin@dds.com</code> · Líder: <code>lider@dds.com</code> · Colaborador: <code>mica@dds.com</code>
-          </div>
-
           <p className="auth-switch">
             ¿No tenés cuenta? <Link to="/registro">Registrate</Link>
           </p>

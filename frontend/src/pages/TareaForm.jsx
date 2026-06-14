@@ -67,24 +67,18 @@ export default function TareaForm({ modo }) {
   // únicamente la descripción.
   const soloDescripcion = esEdicion && !gestor;
 
-  // Responsables válidos = integrantes del proyecto seleccionado.
-  const integrantesProyecto = useMemo(() => {
-    const p = proyectos.find((x) => x.id === form.proyectoId);
-    if (!p) return [];
-    return usuarios.filter((u) => p.integrantes.includes(u.id));
-  }, [form.proyectoId, proyectos, usuarios]);
+  // Responsables válidos = todos los usuarios registrados (admin y colaboradores).
+  const responsablesDisponibles = useMemo(
+    () => [...usuarios].sort((a, b) => a.nombre.localeCompare(b.nombre)),
+    [usuarios]
+  );
 
   const proyectoSel = proyectos.find((p) => p.id === form.proyectoId);
   const proyectoBloqueado = proyectoSel && ['pausado', 'finalizado'].includes(proyectoSel.estado);
 
   const set = (campo) => (e) => {
     const valor = e.target.value;
-    setForm((f) => {
-      const next = { ...f, [campo]: valor };
-      // Si cambia el proyecto, reseteamos el responsable (debe integrar el nuevo).
-      if (campo === 'proyectoId') next.responsableId = '';
-      return next;
-    });
+    setForm((f) => ({ ...f, [campo]: valor }));
   };
 
   const validar = () => {
@@ -92,7 +86,7 @@ export default function TareaForm({ modo }) {
     if (!soloDescripcion) {
       if (!form.proyectoId) e.proyectoId = 'Seleccioná un proyecto';
       if (!form.titulo.trim()) e.titulo = 'El título es obligatorio';
-      if (!form.responsableId) e.responsableId = 'Seleccioná un responsable del proyecto';
+      if (!form.responsableId) e.responsableId = 'Seleccioná un responsable';
       if (!form.fechaLimite) e.fechaLimite = 'Indicá la fecha límite';
     }
     if (!form.descripcion.trim()) e.descripcion = 'La descripción es obligatoria';
@@ -222,14 +216,14 @@ export default function TareaForm({ modo }) {
                 <select
                   id="responsable" className={`select ${errores.responsableId ? 'select--error' : ''}`}
                   value={form.responsableId} onChange={set('responsableId')}
-                  disabled={soloDescripcion || !form.proyectoId}
+                  disabled={soloDescripcion}
                 >
-                  <option value="">{form.proyectoId ? 'Seleccionar…' : 'Elegí un proyecto primero'}</option>
-                  {integrantesProyecto.map((u) => (
+                  <option value="">Seleccionar…</option>
+                  {responsablesDisponibles.map((u) => (
                     <option key={u.id} value={u.id}>{u.nombre}</option>
                   ))}
                 </select>
-                <span className="help">Solo integrantes del proyecto pueden ser responsables.</span>
+                <span className="help">Cualquier usuario registrado puede ser responsable.</span>
                 {errores.responsableId && <span className="field-error"><AlertCircle size={14} /> {errores.responsableId}</span>}
               </div>
 

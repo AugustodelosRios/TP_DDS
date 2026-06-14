@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 /**
- * Panel resumen para administración/líderes (ruta protegida por rol).
+ * Panel resumen para administración (ruta protegida por rol).
  * Muestra: tareas por estado, vencidas, carga por responsable y críticas.
  */
 export default function Resumen() {
@@ -51,7 +51,7 @@ export default function Resumen() {
       <div className="page-head">
         <div>
           <h1>Resumen administrativo</h1>
-          <p>Información agregada del avance de las tareas. Acceso restringido a admin/líder.</p>
+          <p>Información agregada del avance de las tareas. Acceso restringido a admin.</p>
         </div>
       </div>
 

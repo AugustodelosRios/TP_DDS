@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
  *
  * Reglas (espejadas con el backend, que es la fuente de verdad):
  *  - iniciar / bloquear: responsable (colaborador) o gestor.
- *  - finalizar / cancelar: solo gestor (admin/líder).
+ *  - finalizar / cancelar: solo gestor (admin).
  * Las transiciones inválidas se ocultan según el estado actual.
  */
 export default function AccionesTarea({ tarea, usuario, onCambio }) {
@@ -112,7 +112,7 @@ export default function AccionesTarea({ tarea, usuario, onCambio }) {
       )}
       {!puedeOperar && !gestor && !terminal && (
         <p className="muted text-sm mt-4">
-          Solo el responsable o un admin/líder pueden operar esta tarea.
+          Solo el responsable o un admin pueden operar esta tarea.
         </p>
       )}
     </div>

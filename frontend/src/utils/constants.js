@@ -26,11 +26,10 @@ export const ESTADOS_PROYECTO = {
 
 export const ROLES = {
   admin: 'Administrador',
-  lider: 'Líder',
   colaborador: 'Colaborador',
 };
 
-export const ROLES_GESTION = ['admin', 'lider'];
+export const ROLES_GESTION = ['admin'];
 
 export const esGestor = (rol) => ROLES_GESTION.includes(rol);
 
